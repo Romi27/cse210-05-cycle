@@ -19,77 +19,62 @@ from game.casting.actor import Actor
 
 
 def main():
-    play_again = True
 
     # Create two score objects with a position and color.
     score = Score(Point(600, 0), constants.RED)
     score2 = Score(Point(0, 0), constants.GREEN)
 
     # Keep playing with the game with the score continuing to update.
-    while play_again:
-
-        # create the cast
-        cast = Cast()
-        cast.add_actor("snakes", Cycle())
+   # create the cast
+    cast = Cast()
+    cast.add_actor("snakes", Cycle(constants.GREEN))
 
         # try adding a second snake
-        cast.add_actor("snake2", Cycle())
+    cast.add_actor("snake2", Cycle(constants.RED))
 
-        # This sets an x and y for the position of snake2
-        x = int(3*(constants.MAX_X / 4))
-        y = int(constants.MAX_Y / 2)
+       # This sets an x and y for the position of snake2
+    x = int(3*(constants.MAX_X / 4))
+    y = int(constants.MAX_Y / 2)
 
         # this is a different x position for snake1
-        x2 = int((constants.MAX_X / 4))
+    x2 = int((constants.MAX_X / 4))
 
         # set position and velocity of snake2
-        for i in range(constants.SNAKE_LENGTH):
-            position = Point(x, y + i * constants.CELL_SIZE)
-            velocity = Point(0, -1 * constants.CELL_SIZE)
+    for i in range(constants.SNAKE_LENGTH):
+        position = Point(x, y + i * constants.CELL_SIZE)
+        velocity = Point(0, -1 * constants.CELL_SIZE)
 
-            cast._actors["snake2"][0]._segments[i].set_position(position)
-            cast._actors["snake2"][0]._segments[i].set_velocity(velocity)
+        cast._actors["snake2"][0]._segments[i].set_position(position)
+        cast._actors["snake2"][0]._segments[i].set_velocity(velocity)
 
             # I did this to change the position and velocity of snake1
-            position = Point(x2, y + i * constants.CELL_SIZE)
-            velocity = Point(0, -1 * constants.CELL_SIZE)
-            cast._actors["snakes"][0]._segments[i].set_position(position)
-            cast._actors["snakes"][0]._segments[i].set_velocity(velocity)
+        position = Point(x2, y + i * constants.CELL_SIZE)
+        velocity = Point(0, -1 * constants.CELL_SIZE)
+        cast._actors["snakes"][0]._segments[i].set_position(position)
+        cast._actors["snakes"][0]._segments[i].set_velocity(velocity)
 
             # This sets the colors of the two snakes.
-            cast._actors["snake2"][0]._segments[i].set_color(
-                constants.RED)
-            cast._actors["snakes"][0]._segments[i].set_color(
-                constants.GREEN)
+        cast._actors["snake2"][0]._segments[i].set_color(
+            constants.RED)
+        cast._actors["snakes"][0]._segments[i].set_color(
+            constants.GREEN)
 
         # Create two scores, one for the first snake and one for the second.
-        cast.add_actor("scores", score2)
-        cast.add_actor("scores", score)
+    cast.add_actor("scores", score2)
+    cast.add_actor("scores", score)
 
         # start the game
-        keyboard_service = KeyboardService()
-        video_service = VideoService()
+    keyboard_service = KeyboardService()
+    video_service = VideoService()
 
-        script = Script()
-        script.add_action("input", ControlActorsAction(keyboard_service))
-        script.add_action("update", MoveActorsAction())
-        script.add_action("update", HandleCollisionsAction())
-        script.add_action("output", DrawActorsAction(video_service))
+    script = Script()
+    script.add_action("input", ControlActorsAction(keyboard_service))
+    script.add_action("update", MoveActorsAction())
+    script.add_action("update", HandleCollisionsAction())
+    script.add_action("output", DrawActorsAction(video_service))
 
-        director = Director(video_service)
-        director.start_game(cast, script)
-
-        # See if users would like to continue playing.
-        continue_play = input("Would you like to play again? [y/n]")
-        play_again = continue_play.lower()
-        if continue_play.lower() == "n":
-            scores = cast.get_actors("scores")
-
-            scores[0].reset_points()
-            scores[1].reset_points()
-            play_again = False
-        elif continue_play.lower() == "y":
-            play_again = True
+    director = Director(video_service)
+    director.start_game(cast, script)
 
 
 if __name__ == "__main__":
